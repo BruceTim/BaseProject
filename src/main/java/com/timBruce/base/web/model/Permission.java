@@ -1,5 +1,7 @@
 package com.timBruce.base.web.model;
 
+import com.alibaba.fastjson.JSON;
+
 public class Permission {
     private Long id;
 
@@ -49,5 +51,24 @@ public class Permission {
 
     public void setAvailable(Boolean available) {
         this.available = available;
+    }
+
+    @Override
+    public int hashCode () {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals (Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof Permission)) return false;
+        if (this.hashCode() == obj.hashCode()) return true;
+        if (this.permissionSign.equals(((Permission) obj).getPermissionSign())) return true;
+        return false;
+    }
+
+    @Override
+    public String toString () {
+        return JSON.toJSONString(this);
     }
 }

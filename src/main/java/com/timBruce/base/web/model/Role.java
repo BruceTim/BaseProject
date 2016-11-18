@@ -1,5 +1,9 @@
 package com.timBruce.base.web.model;
 
+import com.alibaba.fastjson.JSON;
+
+import java.util.Set;
+
 public class Role {
     private Long id;
 
@@ -10,6 +14,16 @@ public class Role {
     private String description;
 
     private Boolean available;
+
+    private Set<Permission> permissions;
+
+    public Set<Permission> getPermissions () {
+        return permissions;
+    }
+
+    public void setPermissions (Set<Permission> permissions) {
+        this.permissions = permissions;
+    }
 
     public Long getId() {
         return id;
@@ -49,5 +63,24 @@ public class Role {
 
     public void setAvailable(Boolean available) {
         this.available = available;
+    }
+
+    @Override
+    public int hashCode () {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals (Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof Role)) return false;
+        if (this.hashCode() == obj.hashCode()) return true;
+        if (this.roleSign.equals(((Role) obj).getRoleSign())) return true;
+        return false;
+    }
+
+    @Override
+    public String toString () {
+        return JSON.toJSONString(this);
     }
 }
