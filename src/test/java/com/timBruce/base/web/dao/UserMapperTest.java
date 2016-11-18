@@ -51,6 +51,12 @@ public class UserMapperTest {
     }
 
     @Test
+    public void selectByUsernameCachecade () throws Exception {
+        User user = userMapper.selectByUsernameCachecade("张三");
+        System.out.println(user.toString());
+    }
+
+    @Test
     public void deleteByPrimaryKey () throws Exception {
         long id = 1002L;
         System.out.println(userMapper.deleteByPrimaryKey(id));
