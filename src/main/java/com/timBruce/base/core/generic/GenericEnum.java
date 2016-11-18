@@ -11,7 +11,7 @@ public interface GenericEnum {
     /**
      * value: 为保存在数据库中的值
      */
-    public String getValue ();
+    public int getValue ();
 
     /**
      * text : 为前端显示值
