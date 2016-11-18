@@ -1,8 +1,11 @@
 package com.timBruce.base.web.dao;
 
+import com.timBruce.base.core.generic.GenericDao;
 import com.timBruce.base.web.model.Role;
 
-public interface RoleMapper {
+import java.util.List;
+
+public interface RoleMapper extends GenericDao<Role, Long> {
     int deleteByPrimaryKey (Long id);
 
     int insert (Role record);
@@ -14,4 +17,6 @@ public interface RoleMapper {
     int updateByPrimaryKeySelective (Role record);
 
     int updateByPrimaryKey (Role record);
+
+    List<Role> selectByUserid (Long uid);
 }

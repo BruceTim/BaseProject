@@ -7,20 +7,63 @@
     <result column="sex" property="sex" jdbcType="VARCHAR" />
     <result column="email" property="email" jdbcType="VARCHAR" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
-    <result column="state" property="state" jdbcType="VARCHAR" />
+    <result column="state" property="state" typeHandler="com.timBruce.base.core.generic.GenericEnumHandler"/>
     <result column="salt" property="salt" jdbcType="VARCHAR" />
     <result column="password" property="password" jdbcType="CHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="picture" property="picture" jdbcType="VARCHAR" />
   </resultMap>
+
+  <resultMap id="BaseResultMap_CacheCade" type="com.timBruce.base.web.model.User">
+    <id column="id" property="id" jdbcType="BIGINT"/>
+    <result column="username" property="username" jdbcType="VARCHAR"/>
+    <result column="sex" property="sex" jdbcType="VARCHAR"/>
+    <result column="email" property="email" jdbcType="VARCHAR"/>
+    <result column="phone" property="phone" jdbcType="VARCHAR"/>
+    <result column="state" property="state" typeHandler="com.timBruce.base.core.generic.GenericEnumHandler"/>
+    <result column="salt" property="salt" jdbcType="VARCHAR"/>
+    <result column="password" property="password" jdbcType="CHAR"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="picture" property="picture" jdbcType="VARCHAR"/>
+    <collection property="roles" ofType="Role">
+      <id column="roleid" property="id" jdbcType="BIGINT"/>
+      <result column="role_name" property="roleName" jdbcType="VARCHAR"/>
+      <result column="role_sign" property="roleSign" jdbcType="VARCHAR"/>
+      <result column="description" property="description" jdbcType="VARCHAR"/>
+      <result column="available" property="available" jdbcType="BIT"/>
+      <collection property="permissions" ofType="Permission">
+        <id column="pid" property="id" jdbcType="BIGINT"/>
+        <result column="permission_name" property="permissionName" jdbcType="VARCHAR"/>
+        <result column="permission_sign" property="permissionSign" jdbcType="VARCHAR"/>
+        <result column="pdescription" property="description" jdbcType="VARCHAR"/>
+        <result column="pavailable" property="available" jdbcType="BIT"/>
+      </collection>
+    </collection>
+  </resultMap>
   <sql id="Base_Column_List" >
     id, username, sex, email, phone, state, salt, password, create_time, picture
+  </sql>
+
+  <sql id="Base_Column_List_CacheCade">
+    u.id, u.username, u.sex, u.email, u.phone, u.state, u.salt, u.password, u.create_time, u.picture,
+    r.id as roleid, r.role_name, r.role_sign, r.description, r.available,
+    p.id as pid, p.permission_name, p.permission_sign, p.description as pdescription, p.available as pavailable
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from t_user
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByUsernameCachecade" resultMap="BaseResultMap_CacheCade" parameterType="User">
+    SELECT
+    <include refid="Base_Column_List_CacheCade"/>
+    from t_user u
+    LEFT JOIN t_user_role ur ON u.id = ur.user_id
+    LEFT JOIN t_role r ON ur.role_id = r.id
+    LEFT JOIN t_role_permission rp ON r.id = rp.role_id
+    LEFT JOIN t_permission p ON rp.permission_id = p.id
+    WHERE u.username = #{username,jdbcType=VARCHAR}
   </select>
   <select id="selectBySelective" resultMap="BaseResultMap" parameterType="User" >
     select
@@ -40,7 +83,7 @@
       and phone = #{phone,jdbcType=VARCHAR}
     </if>
     <if test="state != null" >
-      and state = #{state,jdbcType=VARCHAR}
+      and state = #{state, typeHandler=com.timBruce.base.core.generic.GenericEnumHandler}
     </if>
     <if test="salt != null" >
       and salt = #{salt,jdbcType=VARCHAR}
@@ -64,8 +107,9 @@
       email, phone, state, 
       salt, password, create_time, 
       picture)
-    values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, 
-      #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR},
+    #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+    #{state,typeHandler=com.timBruce.base.core.generic.GenericEnumHandler},
       #{salt,jdbcType=VARCHAR}, #{password,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{picture,jdbcType=VARCHAR})
   </insert>
@@ -120,7 +164,7 @@
         #{phone,jdbcType=VARCHAR},
       </if>
       <if test="state != null" >
-        #{state,jdbcType=VARCHAR},
+        #{state,typeHandler=com.timBruce.base.core.generic.GenericEnumHandler},
       </if>
       <if test="salt != null" >
         #{salt,jdbcType=VARCHAR},
@@ -152,7 +196,7 @@
         phone = #{phone,jdbcType=VARCHAR},
       </if>
       <if test="state != null" >
-        state = #{state,jdbcType=VARCHAR},
+        state = #{state,typeHandler=com.timBruce.base.core.generic.GenericEnumHandler},
       </if>
       <if test="salt != null" >
         salt = #{salt,jdbcType=VARCHAR},
@@ -175,7 +219,7 @@
       sex = #{sex,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},
-      state = #{state,jdbcType=VARCHAR},
+    state = #{state,typeHandler=com.timBruce.base.core.generic.GenericEnumHandler},
       salt = #{salt,jdbcType=VARCHAR},
       password = #{password,jdbcType=CHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},

@@ -8,8 +8,28 @@
     <result column="description" property="description" jdbcType="VARCHAR" />
     <result column="available" property="available" jdbcType="BIT" />
   </resultMap>
+
+  <resultMap id="BaseResultMap_CacheCade" type="com.timBruce.base.web.model.User">
+    <id column="id" property="id" jdbcType="BIGINT"/>
+    <result column="role_name" property="roleName" jdbcType="VARCHAR"/>
+    <result column="role_sign" property="roleSign" jdbcType="VARCHAR"/>
+    <result column="description" property="description" jdbcType="VARCHAR"/>
+    <result column="available" property="available" jdbcType="BIT"/>
+    <collection property="permissions" ofType="Permission">
+      <id column="pid" property="id" jdbcType="BIGINT"/>
+      <result column="permission_name" property="permissionName" jdbcType="VARCHAR"/>
+      <result column="permission_sign" property="permissionSign" jdbcType="VARCHAR"/>
+      <result column="pdescription" property="description" jdbcType="VARCHAR"/>
+      <result column="pavailable" property="available" jdbcType="BIT"/>
+    </collection>
+  </resultMap>
   <sql id="Base_Column_List" >
     id, role_name, role_sign, description, available
+  </sql>
+
+  <sql id="Base_Column_List_CacheCade">
+    r.id, r.role_name, r.role_sign, r.description, r.available,
+    p.id as pid, p.permission_name, p.permission_sign, p.description as pdescription, p.available as pavailable
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 

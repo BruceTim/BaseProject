@@ -1,8 +1,9 @@
 package com.timBruce.base.web.dao;
 
+import com.timBruce.base.core.generic.GenericDao;
 import com.timBruce.base.web.model.Permission;
 
-public interface PermissionMapper {
+public interface PermissionMapper extends GenericDao<Permission, Long> {
     int deleteByPrimaryKey (Long id);
 
     int insert (Permission record);
